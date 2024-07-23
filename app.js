@@ -115,23 +115,9 @@ app.post('/zdg-message', [
   const numberUser = number.substr(-8, 8);
   const message = req.body.message;
 
-  if (numberDDI !== "55") {
-    const numberZDG = number + "@c.us";
-    client.sendMessage(numberZDG, message).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT Mensagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT Mensagem não enviada',
-      response: err.text
-    });
-    });
-  }
-  else if (numberDDI === "55" && parseInt(numberDDD) <= 30) {
+  console.log(parseInt(numberDDD));
+  console.log(numberDDD);
+  if (numberDDI === "55" && parseInt(numberDDD) <= 30) {
     const numberZDG = "55" + numberDDD + "9" + numberUser + "@c.us";
     client.sendMessage(numberZDG, message).then(response => {
     res.status(200).json({
@@ -142,7 +128,7 @@ app.post('/zdg-message', [
     }).catch(err => {
     res.status(500).json({
       status: false,
-      message: 'BOT Mensagem não enviada',
+      message: 'BOT Mensagem não enviada 1',
       response: err.text
     });
     });
@@ -158,7 +144,7 @@ app.post('/zdg-message', [
     }).catch(err => {
     res.status(500).json({
       status: false,
-      message: 'BOT Mensagem não enviada',
+      message: 'BOT Mensagem não enviada 2',
       response: err.text
     });
     });
