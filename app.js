@@ -13,17 +13,17 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 function delay(t, v) {
-  return new Promise(function(resolve) { 
-      setTimeout(resolve.bind(null, v), t)
+  return new Promise(function (resolve) {
+    setTimeout(resolve.bind(null, v), t)
   });
 }
 
 app.use(express.json());
 app.use(express.urlencoded({
-extended: true
+  extended: true
 }));
 app.use(fileUpload({
-debug: true
+  debug: true
 }));
 app.use("/", express.static(__dirname + "/"))
 
@@ -35,7 +35,8 @@ app.get('/', (req, res) => {
 
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: 'bot' }),
-  puppeteer: { headless: true,
+  puppeteer: {
+    headless: true,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -45,50 +46,51 @@ const client = new Client({
       '--no-zygote',
       '--single-process', // <- this one doesn't works in Windows
       '--disable-gpu'
-    ] }
+    ]
+  }
 });
 
 client.initialize();
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
   socket.emit('message', '© BOT - Iniciado');
   socket.emit('qr', './icon.svg');
 
-client.on('qr', (qr) => {
+  client.on('qr', (qr) => {
     console.log('QR RECEIVED', qr);
     qrcode.toDataURL(qr, (err, url) => {
       socket.emit('qr', url);
       socket.emit('message', '© BOT QRCode recebido, aponte a câmera  seu celular!');
     });
-});
+  });
 
-client.on('ready', () => {
+  client.on('ready', () => {
     socket.emit('ready', '© BOT Dispositivo pronto!');
     socket.emit('message', '© BOT Dispositivo pronto!');
-    socket.emit('qr', './check.svg')	
+    socket.emit('qr', './check.svg')
     console.log('© BOT Dispositivo pronto');
-});
+  });
 
-client.on('authenticated', () => {
+  client.on('authenticated', () => {
     socket.emit('authenticated', '© BOT Autenticado!');
     socket.emit('message', '© BOT Autenticado!');
     console.log('© BOT Autenticado');
-});
+  });
 
-client.on('auth_failure', function() {
+  client.on('auth_failure', function () {
     socket.emit('message', '© BOT Falha na autenticação, reiniciando...');
     console.error('© BOT Falha na autenticação');
-});
+  });
 
-client.on('change_state', state => {
-  console.log('© BOT Status de conexão: ', state );
-});
+  client.on('change_state', state => {
+    console.log('© BOT Status de conexão: ', state);
+  });
 
-client.on('disconnected', (reason) => {
-  socket.emit('message', '© BOT Cliente desconectado!');
-  console.log('© BOT Cliente desconectado', reason);
-  client.initialize();
-});
+  client.on('disconnected', (reason) => {
+    socket.emit('message', '© BOT Cliente desconectado!');
+    console.log('© BOT Cliente desconectado', reason);
+    client.initialize();
+  });
 });
 
 // Send message
@@ -117,38 +119,22 @@ app.post('/zdg-message', [
 
   console.log(parseInt(numberDDD));
   console.log(numberDDD);
-  if (numberDDI === "55" && parseInt(numberDDD) <= 30) {
-    const numberZDG = "55" + numberDDD + "9" + numberUser + "@c.us";
-    client.sendMessage(numberZDG, message).then(response => {
+
+  const numberZDG = number + "@c.us";
+  client.sendMessage(numberZDG, message).then(response => {
     res.status(200).json({
       status: true,
       message: 'BOT Mensagem enviada',
       response: response
     });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT Mensagem não enviada 1',
-      response: err.text
-    });
-    });
-  }
-  else if (numberDDI === "55" && parseInt(numberDDD) > 30) {
-    const numberZDG = "55" + numberDDD + numberUser + "@c.us";
-    client.sendMessage(numberZDG, message).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT Mensagem enviada',
-      response: response
-    });
-    }).catch(err => {
+  }).catch(err => {
     res.status(500).json({
       status: false,
       message: 'BOT Mensagem não enviada 2',
       response: err.text
     });
-    });
-  }
+  });
+
 });
 
 
@@ -190,50 +176,50 @@ app.post('/zdg-media', [
 
   if (numberDDI !== "55") {
     const numberZDG = number + "@c.us";
-    client.sendMessage(numberZDG, media, {caption: caption}).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT Imagem enviada',
-      response: response
-    });
+    client.sendMessage(numberZDG, media, { caption: caption }).then(response => {
+      res.status(200).json({
+        status: true,
+        message: 'BOT Imagem enviada',
+        response: response
+      });
     }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT Imagem não enviada',
-      response: err.text
-    });
+      res.status(500).json({
+        status: false,
+        message: 'BOT Imagem não enviada',
+        response: err.text
+      });
     });
   }
   else if (numberDDI === "55" && parseInt(numberDDD) <= 30) {
     const numberZDG = "55" + numberDDD + "9" + numberUser + "@c.us";
-    client.sendMessage(numberZDG, media, {caption: caption}).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT Imagem enviada',
-      response: response
-    });
+    client.sendMessage(numberZDG, media, { caption: caption }).then(response => {
+      res.status(200).json({
+        status: true,
+        message: 'BOT Imagem enviada',
+        response: response
+      });
     }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT Imagem não enviada',
-      response: err.text
-    });
+      res.status(500).json({
+        status: false,
+        message: 'BOT Imagem não enviada',
+        response: err.text
+      });
     });
   }
   else if (numberDDI === "55" && parseInt(numberDDD) > 30) {
     const numberZDG = "55" + numberDDD + numberUser + "@c.us";
-    client.sendMessage(numberZDG, media, {caption: caption}).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT Imagem enviada',
-      response: response
-    });
+    client.sendMessage(numberZDG, media, { caption: caption }).then(response => {
+      res.status(200).json({
+        status: true,
+        message: 'BOT Imagem enviada',
+        response: response
+      });
     }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT Imagem não enviada',
-      response: err.text
-    });
+      res.status(500).json({
+        status: false,
+        message: 'BOT Imagem não enviada',
+        response: err.text
+      });
     });
   }
 });
@@ -242,18 +228,18 @@ client.on('message', async msg => {
 
   const nomeContato = msg._data.notifyName;
   let groupChat = await msg.getChat();
-  
+
   // if (groupChat.isGroup) return null;
 
   if (msg.type.toLowerCase() == "e2e_notification") return null;
-  
+
   if (msg.body == "") return null;
-  
+
   if (msg.from.includes("@g.us")) return null;
-  
+
 
 });
 
-server.listen(port, function() {
-        console.log('Aplicação rodando na porta *: ' + port + ' . Acesse no link: http://localhost:' + port);
+server.listen(port, function () {
+  console.log('Aplicação rodando na porta *: ' + port + ' . Acesse no link: http://localhost:' + port);
 });
