@@ -112,15 +112,13 @@ app.post('/zdg-message', [
   }
 
   const number = req.body.number;
-  const numberDDI = number.substr(0, 2);
-  const numberDDD = number.substr(2, 2);
-  const numberUser = number.substr(-8, 8);
   const message = req.body.message;
 
-  console.log(parseInt(numberDDD));
-  console.log(numberDDD);
+
 
   const numberZDG = number + "@c.us";
+  console.log(numberZDG);
+
   client.sendMessage(numberZDG, message).then(response => {
     res.status(200).json({
       status: true,
